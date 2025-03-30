@@ -82,7 +82,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Login
+// Login -- 1 
 app.post("/api/acceso", async (req, res) => {
   const { usuario, contra } = req.body;
   
@@ -133,7 +133,7 @@ app.post("/api/acceso", async (req, res) => {
     handleError(res, error, "Error al iniciar sesión");
   }
 });
-
+//2
 app.post("/api/acceso-mfa", async (req, res) => {
   const { tempToken, mfaToken } = req.body;
   
@@ -182,7 +182,7 @@ app.post("/api/acceso-mfa", async (req, res) => {
   }
 });
 
-// Registro
+// Registro--3
 app.post("/api/registro", async (req, res) => {
   const { usuario, correo, contra, nombre } = req.body;
   if (!usuario || !correo || !contra || !nombre) {
@@ -235,7 +235,7 @@ app.post("/api/registro", async (req, res) => {
   }
 });
 
-// Nuevo endpoint para verificar MFA
+// Nuevo endpoint para verificar MFA--3
 app.post("/api/verify-mfa", async (req, res) => {
   const { username, token } = req.body;
   
@@ -274,7 +274,7 @@ app.post("/api/verify-mfa", async (req, res) => {
 
 // Obtener usuarios
 // Obtener usuario por ID
-// Obtener todos los usuarios
+// Obtener todos los usuarios--
 app.get("/api/usuarios", verificarToken, async (req, res) => {
   try {
       const usersSnapshot = await db.collection("Users").get();
@@ -298,21 +298,69 @@ app.get("/api/usuarios/:id", verificarToken, async (req, res) => {
       handleError(res, error, "Error al obtener usuario");
   }
 });
+
+app.put("/api/users/:id", verificarToken, async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { email, fullName, username } = req.body;
+
+    // Verificar que el usuario que hace la petición es el mismo que se quiere modificar
+    if (req.usuario.id !== userId) {
+      return res.status(403).json({ intMessage: "No autorizado para modificar este usuario" });
+    }
+
+    // Validar datos
+    if (!email || !fullName || !username) {
+      return res.status(400).json({ intMessage: "Faltan datos requeridos" });
+    }
+
+    // Verificar si el nuevo username ya existe (excepto para el mismo usuario)
+    const usernameCheck = await db.collection("Users")
+      .where("username", "==", username)
+      .where(admin.firestore.FieldPath.documentId(), "!=", userId)
+      .get();
+
+    if (!usernameCheck.empty) {
+      return res.status(400).json({ intMessage: "El nombre de usuario ya está en uso" });
+    }
+
+    // Verificar si el nuevo email ya existe (excepto para el mismo usuario)
+    const emailCheck = await db.collection("Users")
+      .where("email", "==", email)
+      .where(admin.firestore.FieldPath.documentId(), "!=", userId)
+      .get();
+
+    if (!emailCheck.empty) {
+      return res.status(400).json({ intMessage: "El correo electrónico ya está en uso" });
+    }
+
+    // Actualizar datos
+    await db.collection("Users").doc(userId).update({
+      username: username,
+      email: email,
+      nombre: fullName,
+      updated_at: new Date()
+    });
+
+    res.status(200).json({ intMessage: "Perfil actualizado con éxito" });
+  } catch (error) {
+    handleError(res, error, "Error al actualizar el perfil");
+  }
+});
+
 // Servir archivos estáticos desde la carpeta "uploads"
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // colecciones registro
 app.post("/api/registroColeccionables", upload.array("imagenes", 10), async (req, res) => {
-  const { escala, nombre, precio, fechaLimite } = req.body;
+  const { escala, nombre, fechaLimite } = req.body;
 
-  if (!escala || !nombre || !precio || !fechaLimite) {
+  if (!escala || !nombre  || !fechaLimite) {
     return res.status(400).json({ intMessage: "Faltan datos" });
   }
 
   try {
-    if (precio < 0) {
-      return res.status(400).json({ intMessage: "Precio no puede ser negativo" });
-    }
+    
 
     const coleccionableSnapshot = await db.collection("Coleccionable").where("nombre", "==", nombre).get();
     if (!coleccionableSnapshot.empty) {
@@ -322,7 +370,6 @@ app.post("/api/registroColeccionables", upload.array("imagenes", 10), async (req
     const fechaPublicacion = new Date();
     const newDocRef = await db.collection("Coleccionable").add({
       escala,
-      precio,
       fechaLimite,
       nombre,
       fechaPublicacion,
@@ -651,6 +698,8 @@ currencyWSS.on('connection', (ws) => {
         clearInterval(intervalId);
     });
 });
+
+
 
 const PORT = 3001;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
