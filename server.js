@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
+const bucket = admin.storage().bucket();
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const serviceAccount = require("../../clavescarcollection/carcollection-c78ed-firebase-adminsdk-fbsvc-705090d78d.json");
@@ -81,6 +82,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+const fileUpload = await bucket.upload(file.path, {
+  destination: `coleccionables/${file.filename}`
+});
+const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload[0].name}`;
 
 // Login -- 1 
 app.post("/api/acceso", async (req, res) => {
