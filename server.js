@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
-const bucket = admin.storage().bucket();
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 const serviceAccount = require("../../clavescarcollection/carcollection-c78ed-firebase-adminsdk-fbsvc-705090d78d.json");
@@ -19,8 +18,9 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://carcollection-c78ed-default-rtdb.firebaseio.com/",
 });
-
+const bucket = admin.storage().bucket();
 const db = admin.firestore();
+
 const app = express();
 app.use(express.json());
 app.use(cors({
