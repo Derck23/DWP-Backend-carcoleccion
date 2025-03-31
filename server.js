@@ -82,10 +82,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-const fileUpload = await bucket.upload(file.path, {
-  destination: `coleccionables/${file.filename}`
+app.post("/api/upload", upload.single("file"), async (req, res) => {
+  try {
+    const file = req.file;
+    const fileUpload = await bucket.upload(file.path, {
+      destination: `coleccionables/${file.filename}`
+    });
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload[0].name}`;
+    
+    // Hacer algo con publicUrl
+    res.status(200).json({ url: publicUrl });
+  } catch (error) {
+    handleError(res, error, "Error al subir archivo");
+  }
 });
-const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileUpload[0].name}`;
 
 // Login -- 1 
 app.post("/api/acceso", async (req, res) => {
