@@ -746,7 +746,12 @@ currencyWSS.on('connection', (ws) => {
     });
 });
 
-
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'active',
+    message: 'Backend is running' 
+  });
+});
 
 const PORT = process.env.PORT || 3001;  // Usa el puerto de la variable de entorno o 3001 por defecto
 
