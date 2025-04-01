@@ -651,7 +651,7 @@ app.get('/api/bids/:itemId', async (req, res) => {
 });
 
 //convercion de moneta
-const server = app.listen(PORT, ...);
+const server = app.listen(PORT);
 const currencyWSS = new WebSocket.Server({ server });
 //const currencyWSS = new WebSocket.Server({ port: 3003 });
 
