@@ -23,7 +23,10 @@ const db = admin.firestore();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000", // ✅ Permite solicitudes desde el frontend
+  origin: [
+    "https://dwp-frontend-carcoleccion.vercel.app",
+    "http://localhost:3000" // Para desarrollo local
+  ],
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
   allowedHeaders: "Content-Type,Authorization"
