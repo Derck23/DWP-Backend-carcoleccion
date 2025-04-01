@@ -3,7 +3,7 @@ const cors = require("cors");
 const admin = require("firebase-admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const serviceAccount = require("../../clavescarcollection/carcollection-c78ed-firebase-adminsdk-fbsvc-705090d78d.json");
+const serviceAccount = require("../../UX/DWP/clavescarcollection/carcollection-c78ed-firebase-adminsdk-fbsvc-705090d78d.json");
 const multer = require("multer");
 const nodemailer = require('nodemailer');
 const speakeasy = require('speakeasy');
@@ -701,5 +701,5 @@ currencyWSS.on('connection', (ws) => {
 
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
