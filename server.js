@@ -25,13 +25,19 @@ const db = admin.firestore();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: ["http://localhost:3000", "https://dwp-frontend-carcoleccion.vercel.app/"], // ✅ Permite solicitudes desde el frontend
+  origin: ["http://localhost:3000", "https://dwp-frontend-carcoleccion.vercel.app"],
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
   allowedHeaders: "Content-Type,Authorization"
 }));
 
-app.options("*", cors());
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://dwp-frontend-carcoleccion.vercel.app");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(200);
+});
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
