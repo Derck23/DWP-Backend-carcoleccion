@@ -748,5 +748,8 @@ currencyWSS.on('connection', (ws) => {
 
 
 
-const PORT = 3001;
-app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3001;  // Usa el puerto de la variable de entorno o 3001 por defecto
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});
