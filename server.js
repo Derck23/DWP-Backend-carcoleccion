@@ -3,7 +3,6 @@ const cors = require("cors");
 const admin = require("firebase-admin");
 const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
-const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 const multer = require("multer");
 const nodemailer = require('nodemailer');
 const speakeasy = require('speakeasy');
@@ -12,7 +11,7 @@ const path = require("path");
 const axios = require('axios'); 
 const WebSocket = require('ws');
 const fs = require("fs");
-
+const serviceAccount = JSON.parse(Buffer.from(process.env.FIREBASE_CREDENTIALS_BASE64, 'base64').toString('utf-8'));
 // Inicializar Firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -32,11 +31,12 @@ app.use(cors({
 }));
 
 app.options("*", cors());
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'eramireznieves25@gmail.com', // Tu dirección de Gmail
-    pass: 'addo zkmu jmqw ocpc' // Tu clave de aplicación
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
   }
 });
 
