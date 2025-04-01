@@ -1,0 +1,7 @@
+[service]
+port = 3001
+healthcheckPath = "/"
+healthcheckTimeout = 30
+
+[build]
+builder = "nixpacks"
