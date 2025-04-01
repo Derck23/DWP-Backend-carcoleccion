@@ -22,17 +22,22 @@ admin.initializeApp({
 const db = admin.firestore();
 const app = express();
 app.use(express.json());
+// Configuración CORS actualizada
 app.use(cors({
   origin: [
     "https://dwp-frontend-carcoleccion.vercel.app",
-    "http://localhost:3000" // Para desarrollo local
+    "https://dwp-frontend-carcoleccion.vercel.app/", // Algunos navegadores envían con /
+    "http://localhost:3000",
+    "http://localhost:3000/" // Para desarrollo local
   ],
   credentials: true,
-  methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
-  allowedHeaders: "Content-Type,Authorization"
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  exposedHeaders: ["Authorization"] // Necesario para que el frontend pueda leer headers personalizados
 }));
 
-app.options("*", cors());
+// Manejo explícito de OPTIONS para todas las rutas
+app.options('*', cors());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
