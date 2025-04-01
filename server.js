@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 const multer = require("multer");
@@ -12,7 +12,7 @@ const path = require("path");
 const axios = require('axios'); 
 const WebSocket = require('ws');
 const fs = require("fs");
-
+const PORT = process.env.PORT || 3001;
 // Inicializar Firebase
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -703,5 +703,4 @@ currencyWSS.on('connection', (ws) => {
 
 
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
+
