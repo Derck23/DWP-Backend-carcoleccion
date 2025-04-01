@@ -749,7 +749,8 @@ currencyWSS.on('connection', (ws) => {
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'active',
-    message: 'Backend is running' 
+    message: 'Backend is running',
+    timestamp: new Date().toISOString()
   });
 });
 
