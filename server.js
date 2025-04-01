@@ -3,7 +3,7 @@ const cors = require("cors");
 const admin = require("firebase-admin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const serviceAccount = require("../../UX/DWP/clavescarcollection/carcollection-c78ed-firebase-adminsdk-fbsvc-705090d78d.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 const multer = require("multer");
 const nodemailer = require('nodemailer');
 const speakeasy = require('speakeasy');
@@ -23,7 +23,7 @@ const db = admin.firestore();
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:3000", // ✅ Permite solicitudes desde el frontend
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", // ✅ Permite solicitudes desde el frontend
   credentials: true,
   methods: "GET,POST,PUT,DELETE,PATCH,OPTIONS",
   allowedHeaders: "Content-Type,Authorization"
@@ -33,8 +33,8 @@ app.options("*", cors());
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'eramireznieves25@gmail.com', // Tu dirección de Gmail
-    pass: 'addo zkmu jmqw ocpc' // Tu clave de aplicación
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
