@@ -16,6 +16,7 @@ const serviceAccount = JSON.parse(Buffer.from(process.env.FIREBASE_CREDENTIALS_B
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://carcollection-c78ed-default-rtdb.firebaseio.com/",
+  storageBucket: "carcollection-c78ed.appspot.com" // Nombre correcto del bucket
 });
 
 const bucket = admin.storage().bucket();
